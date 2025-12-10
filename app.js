@@ -136,6 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('appointment-form').addEventListener('submit', handleAppointmentSubmit);
   document.getElementById('service-form').addEventListener('submit', handleServiceSubmit);
   document.getElementById('doctor-form').addEventListener('submit', handleDoctorSubmit);
+  document.getElementById('slot-form')?.addEventListener('submit', handleSlotSubmit);
   document.getElementById('supabase-settings-form').addEventListener('submit', handleSupabaseSettings);
   document.getElementById('n8n-settings-form').addEventListener('submit', handleN8nSettings);
 
@@ -157,6 +158,7 @@ function loadSectionData(section) {
     case 'appointments': loadAppointments(); break;
     case 'services': loadServices(); break;
     case 'doctors': loadDoctors(); break;
+    case 'slots': loadSlotServiceFilter(); loadSlots(); break;
   }
 }
 
@@ -891,6 +893,154 @@ function debounce(func, wait) {
   };
 }
 
+// ===== AVAILABLE SLOTS =====
+async function loadSlots() {
+  if (!supabaseClient) return;
+
+  const serviceFilter = document.getElementById('slot-service-filter')?.value;
+  const statusFilter = document.getElementById('slot-status-filter')?.value;
+
+  let query = supabaseClient
+    .from('available_slots')
+    .select('*, services(name)')
+    .order('slot_date', { ascending: true })
+    .order('slot_time', { ascending: true });
+
+  if (serviceFilter) {
+    query = query.eq('service_id', serviceFilter);
+  }
+  if (statusFilter !== '') {
+    query = query.eq('is_booked', statusFilter === 'true');
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    showToast('خطأ في تحميل المواعيد المتاحة', 'error');
+    return;
+  }
+
+  const tbody = document.getElementById('slots-tbody');
+  if (!tbody) return;
+
+  if (!data || data.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">لا توجد مواعيد متاحة</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = data.map(slot => `
+    <tr>
+      <td>${slot.services?.name || '-'}</td>
+      <td>${formatDate(slot.slot_date)}</td>
+      <td>${slot.slot_time}</td>
+      <td>
+        <span class="status-badge ${slot.is_booked ? 'status-cancelled' : 'status-confirmed'}">
+          ${slot.is_booked ? 'محجوز' : 'متاح'}
+        </span>
+      </td>
+      <td class="actions">
+        <button class="btn-icon ${slot.is_booked ? 'btn-success' : 'btn-warning'}" 
+                onclick="toggleSlotStatus('${slot.id}', ${slot.is_booked})" 
+                title="${slot.is_booked ? 'تحديد كمتاح' : 'تحديد كمحجوز'}">
+          <i class="fas ${slot.is_booked ? 'fa-unlock' : 'fa-lock'}"></i>
+        </button>
+        <button class="btn-icon btn-danger" onclick="deleteSlot('${slot.id}')" title="حذف">
+          <i class="fas fa-trash"></i>
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function loadSlotServiceFilter() {
+  if (!supabaseClient) return;
+
+  const { data } = await supabaseClient.from('services').select('id, name');
+
+  const filterSelect = document.getElementById('slot-service-filter');
+  const formSelect = document.getElementById('slot-service');
+
+  if (data) {
+    const options = data.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+    if (filterSelect) {
+      filterSelect.innerHTML = '<option value="">جميع الخدمات</option>' + options;
+    }
+    if (formSelect) {
+      formSelect.innerHTML = '<option value="">اختر الخدمة</option>' + options;
+    }
+  }
+}
+
+async function handleSlotSubmit(e) {
+  e.preventDefault();
+  if (!supabaseClient) return;
+
+  const id = document.getElementById('slot-id').value;
+  const slotData = {
+    service_id: document.getElementById('slot-service').value,
+    slot_date: document.getElementById('slot-date').value,
+    slot_time: document.getElementById('slot-time').value,
+    is_booked: false
+  };
+
+  let result;
+  if (id) {
+    result = await supabaseClient.from('available_slots').update(slotData).eq('id', id);
+  } else {
+    result = await supabaseClient.from('available_slots').insert([slotData]);
+  }
+
+  if (result.error) {
+    showToast('خطأ في حفظ الموعد', 'error');
+    return;
+  }
+
+  showToast(id ? 'تم تحديث الموعد' : 'تم إضافة الموعد', 'success');
+  closeModal('slot-modal');
+  loadSlots();
+}
+
+async function toggleSlotStatus(id, currentStatus) {
+  if (!supabaseClient) return;
+
+  const { error } = await supabaseClient
+    .from('available_slots')
+    .update({ is_booked: !currentStatus })
+    .eq('id', id);
+
+  if (error) {
+    showToast('خطأ في تحديث الحالة', 'error');
+    return;
+  }
+
+  showToast('تم تحديث الحالة', 'success');
+  loadSlots();
+}
+
+async function deleteSlot(id) {
+  if (!confirm('هل أنت متأكد من حذف هذا الموعد؟')) return;
+  if (!supabaseClient) return;
+
+  const { error } = await supabaseClient.from('available_slots').delete().eq('id', id);
+
+  if (error) {
+    showToast('خطأ في حذف الموعد', 'error');
+    return;
+  }
+
+  showToast('تم حذف الموعد', 'success');
+  loadSlots();
+}
+
+function formatDate(dateStr) {
+  return new Date(dateStr).toLocaleDateString('ar-EG', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+
 // Make functions globally available
 window.openModal = openModal;
 window.closeModal = closeModal;
@@ -902,3 +1052,7 @@ window.editService = editService;
 window.deleteService = deleteService;
 window.editDoctor = editDoctor;
 window.deleteDoctor = deleteDoctor;
+window.loadSlots = loadSlots;
+window.toggleSlotStatus = toggleSlotStatus;
+window.deleteSlot = deleteSlot;
+

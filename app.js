@@ -932,7 +932,7 @@ async function loadSlots() {
     <tr>
       <td>${slot.services?.name || '-'}</td>
       <td>${formatDate(slot.slot_date)}</td>
-      <td>${slot.slot_time}</td>
+      <td>${formatTime12Hour(slot.slot_time)}</td>
       <td>
         <span class="status-badge ${slot.is_booked ? 'status-cancelled' : 'status-confirmed'}">
           ${slot.is_booked ? 'محجوز' : 'متاح'}
@@ -1041,6 +1041,43 @@ function formatDate(dateStr) {
   });
 }
 
+// تحويل الوقت لصيغة 12 ساعة
+function formatTime12Hour(timeStr) {
+  if (!timeStr) return '-';
+
+  const [hours, minutes] = timeStr.split(':');
+  let hour = parseInt(hours);
+  const ampm = hour >= 12 ? 'مساءً' : 'صباحاً';
+
+  hour = hour % 12;
+  hour = hour ? hour : 12; // 0 تصبح 12
+
+  return `${hour}:${minutes} ${ampm}`;
+}
+
+// الاشتراك في التحديثات الفورية
+function subscribeToSlotUpdates() {
+  if (!supabaseClient) return;
+
+  supabaseClient
+    .channel('available_slots_changes')
+    .on('postgres_changes',
+      { event: '*', schema: 'public', table: 'available_slots' },
+      (payload) => {
+        console.log('Slot updated:', payload);
+        loadSlots(); // إعادة تحميل الجدول
+      }
+    )
+    .subscribe();
+}
+
+// استدعاء الاشتراك عند تحميل قسم المواعيد
+const originalLoadSlots = loadSlots;
+loadSlots = async function () {
+  await originalLoadSlots();
+  subscribeToSlotUpdates();
+};
+
 // Make functions globally available
 window.openModal = openModal;
 window.closeModal = closeModal;
@@ -1055,4 +1092,3 @@ window.deleteDoctor = deleteDoctor;
 window.loadSlots = loadSlots;
 window.toggleSlotStatus = toggleSlotStatus;
 window.deleteSlot = deleteSlot;
-

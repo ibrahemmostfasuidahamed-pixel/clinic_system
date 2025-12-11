@@ -651,8 +651,8 @@ tr:hover td {
 
 /* تصميم خيارات القائمة المنسدلة */
 .form-group select option {
-  background: #1a1a2e;
-  color: #ffffff;
+  background: #ffffff;
+  color: #000000;
   padding: 0.5rem;
 }
 

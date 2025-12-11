@@ -649,6 +649,19 @@ tr:hover td {
   box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
 }
 
+/* تصميم خيارات القائمة المنسدلة */
+.form-group select option {
+  background: #1a1a2e;
+  color: #ffffff;
+  padding: 0.5rem;
+}
+
+.form-group select option:hover,
+.form-group select option:checked {
+  background: #0ea5e9;
+  color: #ffffff;
+}
+
 .form-group textarea {
   resize: vertical;
   min-height: 100px;

@@ -575,7 +575,7 @@ function renderServicesGrid(services) {
     <div class="service-card">
       <h4>${s.name}</h4>
       <p class="service-description">${s.description || 'لا يوجد وصف'}</p>
-      <div class="service-price">${s.price} ريال</div>
+      <div class="service-price">${s.price} ج.م</div>
       <div class="card-actions">
         <button class="btn btn-sm btn-secondary" onclick="editService('${s.id}')">
           <i class="fas fa-edit"></i> تعديل

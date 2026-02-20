@@ -2,7 +2,7 @@
 // ============================================================
 
 // ===== SUPABASE CONFIGURATION =====
-const SUPABASE_URL = 'https://islapcokcteyrbeqrsu.supabase.co';
+const SUPABASE_URL = 'https://islapcokcteyrbqeqrsu.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlzbGFwY29rY3RleXJicWVxcnN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE1OTA0MDgsImV4cCI6MjA4NzE2NjQwOH0.FHh6B8bz7gsgBujNp-b9ZveL9NDLOwigQEqKYZChA50';
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

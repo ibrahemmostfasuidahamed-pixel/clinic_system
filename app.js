@@ -2,7 +2,7 @@
 // Complete frontend with Supabase integration and modern UI
 
 // ===== CONFIGURATION =====
-const SUPABASE_URL_DEFAULT = 'https://islapcokcteyrbeqrsu.supabase.co';
+const SUPABASE_URL_DEFAULT = 'https://islapcokcteyrbqeqrsu.supabase.co';
 const SUPABASE_KEY_DEFAULT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlzbGFwY29rY3RleXJicWVxcnN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE1OTA0MDgsImV4cCI6MjA4NzE2NjQwOH0.FHh6B8bz7gsgBujNp-b9ZveL9NDLOwigQEqKYZChA50';
 
 let SUPABASE_URL = localStorage.getItem('supabase_url') || SUPABASE_URL_DEFAULT;

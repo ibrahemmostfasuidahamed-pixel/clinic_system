@@ -2,8 +2,8 @@
 // Complete frontend with Supabase integration and modern UI
 
 // ===== CONFIGURATION =====
-const SUPABASE_URL_DEFAULT = 'https://islapcokcteyrbqeqrsu.supabase.co';
-const SUPABASE_KEY_DEFAULT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlzbGFwY29rY3RleXJicWVxcnN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE1OTA0MDgsImV4cCI6MjA4NzE2NjQwOH0.FHh6B8bz7gsgBujNp-b9ZveL9NDLOwigQEqKYZChA50';
+const SUPABASE_URL_DEFAULT = 'https://iyupgiwyoqnnqjuihnbu.supabase.co';
+const SUPABASE_KEY_DEFAULT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml5dXBnaXd5b3FubnFqdWlobmJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2MDYyMjMsImV4cCI6MjA4NzE4MjIyM30.s-nTfvE5pXMbjwT7u26dfAmsErx8UHPex0evaHt1vpI';
 
 let SUPABASE_URL = localStorage.getItem('supabase_url') || SUPABASE_URL_DEFAULT;
 let SUPABASE_ANON_KEY = localStorage.getItem('supabase_key') || SUPABASE_KEY_DEFAULT;

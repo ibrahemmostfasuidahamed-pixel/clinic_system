@@ -2,8 +2,8 @@
 // Complete frontend with Supabase integration and modern UI
 
 // ===== CONFIGURATION =====
-const SUPABASE_URL_DEFAULT = 'https://hcmslqruxqbjrnryztub.supabase.co';
-const SUPABASE_KEY_DEFAULT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhjbXNscXJ1eHFianJucnl6dHViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzMDcyMjIsImV4cCI6MjA4MDg4MzIyMn0.LWSIMmFCXKdQtnKYNvedB5dzaQysUO_u4FLQDKVV9Gg';
+const SUPABASE_URL_DEFAULT = 'https://islapcokcteyrbeqrsu.supabase.co';
+const SUPABASE_KEY_DEFAULT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlzbGFwY29rY3RleXJicWVxcnN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE1OTA0MDgsImV4cCI6MjA4NzE2NjQwOH0.FHh6B8bz7gsgBujNp-b9ZveL9NDLOwigQEqKYZChA50';
 
 let SUPABASE_URL = localStorage.getItem('supabase_url') || SUPABASE_URL_DEFAULT;
 let SUPABASE_ANON_KEY = localStorage.getItem('supabase_key') || SUPABASE_KEY_DEFAULT;
@@ -216,18 +216,21 @@ async function loadDashboard() {
 function renderUpcomingAppointments(appointments) {
   const container = document.getElementById('upcoming-list');
   if (!appointments.length) {
-    container.innerHTML = '<p class="empty-state">لا توجد مواعيد قادمة</p>';
+    container.innerHTML = '<p class="empty-state"><i class="fas fa-calendar-times" style="font-size:2rem;color:var(--text-muted);display:block;margin-bottom:.5rem"></i>لا توجد مواعيد قادمة</p>';
     return;
   }
-
+  const colors = { pending: 'var(--warning)', confirmed: 'var(--primary)', completed: 'var(--success)', cancelled: 'var(--danger)' };
   container.innerHTML = appointments.map(apt => `
-    <div class="list-item">
-      <div class="list-item-icon"><i class="fas fa-calendar-check"></i></div>
-      <div class="list-item-info">
-        <h4>${apt.patients?.full_name || 'مريض'}</h4>
-        <p>${apt.services?.name || 'خدمة'} - ${formatDate(apt.appointment_date)}</p>
+    <div class="appt-item">
+      <div class="appt-dot" style="background:${colors[apt.status] || 'var(--primary)'};box-shadow:0 0 8px ${colors[apt.status] || 'var(--primary)'}"></div>
+      <div class="appt-info">
+        <div class="appt-name">${apt.patients?.full_name || 'مريض'}</div>
+        <div class="appt-meta">${apt.services?.name || 'خدمة'} &bull; ${apt.doctors?.full_name || ''}</div>
       </div>
-      <span class="status-badge status-${apt.status}">${getStatusText(apt.status)}</span>
+      <div style="text-align:left">
+        <div class="appt-time">${new Date(apt.appointment_date).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}</div>
+        <span class="status-badge status-${apt.status}" style="font-size:0.72rem">${getStatusText(apt.status)}</span>
+      </div>
     </div>
   `).join('');
 }
@@ -235,19 +238,20 @@ function renderUpcomingAppointments(appointments) {
 function renderRecentPatients(patients) {
   const container = document.getElementById('recent-patients-list');
   if (!patients.length) {
-    container.innerHTML = '<p class="empty-state">لا يوجد مرضى حتى الآن</p>';
+    container.innerHTML = '<p class="empty-state"><i class="fas fa-user-slash" style="font-size:2rem;color:var(--text-muted);display:block;margin-bottom:.5rem"></i>لا يوجد مرضى حتى الآن</p>';
     return;
   }
-
-  container.innerHTML = patients.map(p => `
-    <div class="list-item">
-      <div class="list-item-icon"><i class="fas fa-user"></i></div>
-      <div class="list-item-info">
-        <h4>${p.full_name}</h4>
-        <p>${p.phone || 'لا يوجد رقم هاتف'}</p>
+  container.innerHTML = patients.map(p => {
+    const initial = (p.full_name || '?').charAt(0).toUpperCase();
+    return `
+    <div class="patient-item">
+      <div class="patient-av">${initial}</div>
+      <div>
+        <div class="patient-name">${p.full_name}</div>
+        <div class="patient-phone">${p.phone || p.email || 'لا يوجد بيانات تواصل'}</div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 // ===== PATIENTS CRUD =====
@@ -570,12 +574,13 @@ function renderServicesGrid(services) {
     grid.innerHTML = '<div class="empty-state">لا توجد خدمات</div>';
     return;
   }
-
-  grid.innerHTML = services.map(s => `
+  const icons = ['fa-tooth', 'fa-x-ray', 'fa-syringe', 'fa-pills', 'fa-procedures', 'fa-heartbeat'];
+  grid.innerHTML = services.map((s, i) => `
     <div class="service-card">
+      <div class="service-icon"><i class="fas ${icons[i % icons.length]}"></i></div>
       <h4>${s.name}</h4>
-      <p class="service-description">${s.description || 'لا يوجد وصف'}</p>
-      <div class="service-price">${s.price} ج.م</div>
+      <p class="service-description">${s.description || 'خدمة طبية متخصصة'}</p>
+      <div class="service-price"><i class="fas fa-pound-sign" style="font-size:1rem"></i> ${s.price} ج.م</div>
       <div class="card-actions">
         <button class="btn btn-sm btn-secondary" onclick="editService('${s.id}')">
           <i class="fas fa-edit"></i> تعديل
@@ -682,13 +687,19 @@ function renderDoctorsGrid(doctors) {
     grid.innerHTML = '<div class="empty-state">لا يوجد أطباء</div>';
     return;
   }
-
-  grid.innerHTML = doctors.map(d => `
+  grid.innerHTML = doctors.map(d => {
+    const initial = (d.full_name || 'د').charAt(0).toUpperCase();
+    return `
     <div class="doctor-card">
-      <h4><i class="fas fa-user-md"></i> ${d.full_name}</h4>
-      <p class="doctor-specialty">${d.specialty || 'تخصص عام'}</p>
-      <p><i class="fas fa-phone"></i> ${d.phone || '-'}</p>
-      <p><i class="fas fa-envelope"></i> ${d.email || '-'}</p>
+      <div class="doctor-avatar">${initial}</div>
+      <div class="doctor-badge">د. ${d.specialty || 'طب عام'}</div>
+      <h4>${d.full_name}</h4>
+      <p class="doctor-specialty" style="display:flex;align-items:center;gap:.4rem">
+        <i class="fas fa-phone" style="color:var(--primary)"></i> ${d.phone || 'لا يوجد'}
+      </p>
+      <p class="doctor-specialty" style="display:flex;align-items:center;gap:.4rem">
+        <i class="fas fa-envelope" style="color:var(--accent)"></i> ${d.email || 'لا يوجد'}
+      </p>
       <div class="card-actions">
         <button class="btn btn-sm btn-secondary" onclick="editDoctor('${d.id}')">
           <i class="fas fa-edit"></i> تعديل
@@ -697,8 +708,8 @@ function renderDoctorsGrid(doctors) {
           <i class="fas fa-trash"></i> حذف
         </button>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 async function handleDoctorSubmit(e) {

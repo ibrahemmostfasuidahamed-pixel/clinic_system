@@ -2,153 +2,200 @@
 <html lang="ar" dir="rtl">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>تسجيل الدخول - عيادة أسنان</title>
-    <meta name="description" content="تسجيل الدخول إلى نظام إدارة عيادة الأسنان" />
-    <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تسجيل الدخول — عيادة الأسنان</title>
+  <meta name="description" content="تسجيل الدخول إلى نظام إدارة عيادة الأسنان" />
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 
 <body class="login-page">
-    <!-- Animated Background -->
-    <div class="login-bg">
-        <div class="bg-shape shape-1"></div>
-        <div class="bg-shape shape-2"></div>
-        <div class="bg-shape shape-3"></div>
+
+  <!-- 3D Custom Cursor -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- Animated Background -->
+  <div class="login-bg">
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="bg-shape shape-3"></div>
+  </div>
+
+  <!-- 3D Orbs -->
+  <div class="orb-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Grid Overlay -->
+  <div class="grid-overlay"></div>
+
+  <!-- Main Login Container -->
+  <div class="login-container">
+
+    <!-- Logo -->
+    <div class="login-logo">
+      <div class="logo-icon-wrapper">
+        <i class="fas fa-tooth"></i>
+      </div>
+      <h1>عيادة الأسنان</h1>
+      <p>نظام الإدارة الذكي</p>
     </div>
 
-    <!-- Main Login Container -->
-    <div class="login-container">
-        <!-- Logo Section -->
-        <div class="login-logo">
-            <div class="logo-icon-wrapper">
-                <i class="fas fa-tooth"></i>
-            </div>
-            <h1>عيادة أسنان</h1>
-            <p>نظام إدارة العيادة</p>
+    <!-- Auth Card -->
+    <div class="auth-card">
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login" id="tab-login">
+          <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+        </button>
+        <button class="auth-tab" data-tab="register" id="tab-register">
+          <i class="fas fa-user-plus"></i> حساب جديد
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form active">
+
+        <!-- Google Sign In -->
+        <button type="button" class="google-btn" id="google-login-btn">
+          <svg class="google-icon" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          تسجيل الدخول بـ Google
+        </button>
+
+        <div class="google-divider">أو بالبريد الإلكتروني</div>
+
+        <div class="form-group">
+          <label for="login-email"><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+          <input type="email" id="login-email" placeholder="أدخل بريدك الإلكتروني" required />
         </div>
 
-        <!-- Auth Card -->
-        <div class="auth-card">
-            <!-- Tabs -->
-            <div class="auth-tabs">
-                <button class="auth-tab active" data-tab="login">
-                    <i class="fas fa-sign-in-alt"></i>
-                    تسجيل الدخول
-                </button>
-                <button class="auth-tab" data-tab="register">
-                    <i class="fas fa-user-plus"></i>
-                    حساب جديد
-                </button>
-            </div>
-
-            <!-- Login Form -->
-            <form id="login-form" class="auth-form active">
-                <div class="form-group">
-                    <label for="login-email">
-                        <i class="fas fa-envelope"></i>
-                        البريد الإلكتروني
-                    </label>
-                    <input type="email" id="login-email" placeholder="أدخل بريدك الإلكتروني" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="login-password">
-                        <i class="fas fa-lock"></i>
-                        كلمة المرور
-                    </label>
-                    <div class="password-input-wrapper">
-                        <input type="password" id="login-password" placeholder="أدخل كلمة المرور" required />
-                        <button type="button" class="toggle-password" onclick="togglePassword('login-password')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-options">
-                    <label class="remember-me">
-                        <input type="checkbox" id="remember-me" />
-                        <span>تذكرني</span>
-                    </label>
-                    <a href="#" class="forgot-password">نسيت كلمة المرور؟</a>
-                </div>
-
-                <button type="submit" class="auth-btn">
-                    <i class="fas fa-sign-in-alt"></i>
-                    تسجيل الدخول
-                </button>
-            </form>
-
-            <!-- Register Form -->
-            <form id="register-form" class="auth-form">
-                <div class="form-group">
-                    <label for="register-name">
-                        <i class="fas fa-user"></i>
-                        الاسم الكامل
-                    </label>
-                    <input type="text" id="register-name" placeholder="أدخل اسمك الكامل" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="register-email">
-                        <i class="fas fa-envelope"></i>
-                        البريد الإلكتروني
-                    </label>
-                    <input type="email" id="register-email" placeholder="أدخل بريدك الإلكتروني" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="register-password">
-                        <i class="fas fa-lock"></i>
-                        كلمة المرور
-                    </label>
-                    <div class="password-input-wrapper">
-                        <input type="password" id="register-password" placeholder="أدخل كلمة المرور (6 أحرف على الأقل)"
-                            required minlength="6" />
-                        <button type="button" class="toggle-password" onclick="togglePassword('register-password')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="register-confirm-password">
-                        <i class="fas fa-lock"></i>
-                        تأكيد كلمة المرور
-                    </label>
-                    <div class="password-input-wrapper">
-                        <input type="password" id="register-confirm-password" placeholder="أعد إدخال كلمة المرور"
-                            required />
-                        <button type="button" class="toggle-password"
-                            onclick="togglePassword('register-confirm-password')">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <button type="submit" class="auth-btn register-btn">
-                    <i class="fas fa-user-plus"></i>
-                    إنشاء حساب
-                </button>
-            </form>
-
-            <!-- Error/Success Messages -->
-            <div id="auth-message" class="auth-message"></div>
+        <div class="form-group">
+          <label for="login-password"><i class="fas fa-lock"></i> كلمة المرور</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="login-password" placeholder="أدخل كلمة المرور" required />
+            <button type="button" class="toggle-password" onclick="togglePassword('login-password')">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
         </div>
 
-        <!-- Footer -->
-        <div class="login-footer">
-            <p>© 2024 عيادة أسنان - جميع الحقوق محفوظة</p>
+        <div class="form-options">
+          <label class="remember-me">
+            <input type="checkbox" id="remember-me" />
+            <span>تذكرني</span>
+          </label>
+          <a href="#" class="forgot-password">نسيت كلمة المرور؟</a>
         </div>
+
+        <button type="submit" class="auth-btn" id="login-btn">
+          <i class="fas fa-sign-in-alt"></i>
+          تسجيل الدخول
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" class="auth-form">
+
+        <!-- Google Sign Up -->
+        <button type="button" class="google-btn" id="google-register-btn">
+          <svg class="google-icon" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          إنشاء حساب بـ Google
+        </button>
+
+        <div class="google-divider">أو بالبريد الإلكتروني</div>
+
+        <div class="form-group">
+          <label for="register-name"><i class="fas fa-user"></i> الاسم الكامل</label>
+          <input type="text" id="register-name" placeholder="أدخل اسمك الكامل" required />
+        </div>
+
+        <div class="form-group">
+          <label for="register-email"><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+          <input type="email" id="register-email" placeholder="أدخل بريدك الإلكتروني" required />
+        </div>
+
+        <div class="form-group">
+          <label for="register-password"><i class="fas fa-lock"></i> كلمة المرور</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="register-password" placeholder="6 أحرف على الأقل" required minlength="6" />
+            <button type="button" class="toggle-password" onclick="togglePassword('register-password')">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="register-confirm-password"><i class="fas fa-shield-alt"></i> تأكيد كلمة المرور</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="register-confirm-password" placeholder="أعد إدخال كلمة المرور" required />
+            <button type="button" class="toggle-password" onclick="togglePassword('register-confirm-password')">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="auth-btn register-btn" id="register-btn">
+          <i class="fas fa-user-plus"></i>
+          إنشاء حساب
+        </button>
+      </form>
+
+      <!-- Message -->
+      <div id="auth-message" class="auth-message"></div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="toast"></div>
+    <!-- Footer -->
+    <div class="login-footer">
+      <p>© 2025 عيادة الأسنان — جميع الحقوق محفوظة</p>
+    </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="auth.js"></script>
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="auth.js"></script>
+
+  <!-- 3D Cursor Script -->
+  <script>
+    const dot  = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    function animateCursor() {
+      rx += (mx - rx) * 0.15;
+      ry += (my - ry) * 0.15;
+      dot.style.left  = mx + 'px';
+      dot.style.top   = my + 'px';
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+    document.addEventListener('mousedown', () => {
+      dot.style.transform = 'translate(-50%,-50%) scale(0.7)';
+      ring.style.transform = 'translate(-50%,-50%) scale(1.3)';
+    });
+    document.addEventListener('mouseup', () => {
+      dot.style.transform = 'translate(-50%,-50%) scale(1)';
+      ring.style.transform = 'translate(-50%,-50%) scale(1)';
+    });
+  </script>
 </body>
-
 </html>

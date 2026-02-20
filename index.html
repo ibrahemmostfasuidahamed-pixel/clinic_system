@@ -4,54 +4,346 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>عيادة أسنان - نظام إدارة العيادة</title>
+    <title>لوحة التحكم — عيادة الأسنان</title>
     <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap"
+        rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+        /* Extra dashboard-specific 3D styles */
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.65rem 1.2rem;
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: var(--radius-sm);
+            color: #f87171;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            width: 100%;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.18);
+            border-color: rgba(239, 68, 68, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* Holographic stat numbers */
+        .stat-info h3 {
+            background: linear-gradient(135deg, #fff, var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Mini chart bars in dashboard */
+        .mini-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 40px;
+            margin-top: 0.5rem;
+        }
+
+        .mini-bar {
+            flex: 1;
+            border-radius: 3px 3px 0 0;
+            background: linear-gradient(180deg, var(--primary), var(--accent));
+            opacity: 0.5;
+            transition: opacity 0.3s;
+            animation: barGrow 0.8s ease both;
+        }
+
+        @keyframes barGrow {
+            from {
+                transform: scaleY(0);
+                transform-origin: bottom;
+            }
+
+            to {
+                transform: scaleY(1);
+            }
+        }
+
+        .stat-card:hover .mini-bar {
+            opacity: 0.85;
+        }
+
+        /* Top header bar */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            backdrop-filter: blur(20px);
+        }
+
+        .top-bar-title {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .top-bar-time {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .top-notif-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-size: 1rem;
+        }
+
+        .top-notif-btn .badge {
+            position: absolute;
+            top: -3px;
+            right: -3px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--danger);
+            font-size: 0.65rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Appointment list item */
+        .appt-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.85rem 1rem;
+            background: rgba(255, 255, 255, 0.025);
+            border-radius: var(--radius-xs);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .appt-item:hover {
+            background: rgba(14, 165, 233, 0.06);
+            border-color: rgba(14, 165, 233, 0.2);
+            transform: translateX(-4px);
+        }
+
+        .appt-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .appt-info {
+            flex: 1;
+        }
+
+        .appt-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .appt-meta {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .appt-time {
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Patient list item */
+        .patient-item {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.025);
+            border-radius: var(--radius-xs);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .patient-item:hover {
+            background: rgba(139, 92, 246, 0.06);
+            border-color: rgba(139, 92, 246, 0.2);
+            transform: translateX(-4px);
+        }
+
+        .patient-av {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.9rem;
+            box-shadow: 0 0 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .patient-name {
+            font-weight: 700;
+            font-size: 0.88rem;
+        }
+
+        .patient-phone {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            direction: ltr;
+            text-align: right;
+        }
+
+        /* Section glow heading */
+        .section-header h2 i {
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+
+        /* Service card icon */
+        .service-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(6, 182, 212, 0.15));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            box-shadow: 0 0 16px rgba(14, 165, 233, 0.2);
+        }
+
+        /* Doctor badge */
+        .doctor-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.12), rgba(139, 92, 246, 0.12));
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+    </style>
 </head>
 
 <body>
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
+    <!-- 3D Custom Cursor -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- Background -->
+    <div class="grid-overlay"></div>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
         <div class="logo-container">
             <i class="fas fa-tooth logo-icon"></i>
-            <h1 class="logo">عيادة أسنان</h1>
+            <h1 class="logo">عيادة الأسنان</h1>
         </div>
+
         <nav>
             <ul>
-                <li><a href="#" data-section="dashboard" class="nav-link active"><i class="fas fa-home"></i> لوحة
-                        التحكم</a></li>
-                <li><a href="#" data-section="patients" class="nav-link"><i class="fas fa-users"></i> المرضى</a></li>
-                <li><a href="#" data-section="appointments" class="nav-link"><i class="fas fa-calendar-check"></i>
-                        المواعيد</a></li>
-                <li><a href="#" data-section="services" class="nav-link"><i class="fas fa-briefcase-medical"></i>
-                        الخدمات</a></li>
-                <li><a href="#" data-section="doctors" class="nav-link"><i class="fas fa-user-md"></i> الأطباء</a></li>
-                <li><a href="#" data-section="slots" class="nav-link"><i class="fas fa-clock"></i> المواعيد المتاحة</a>
-                </li>
-                <li><a href="#" data-section="settings" class="nav-link"><i class="fas fa-cog"></i> الإعدادات</a></li>
+                <li><a href="#" data-section="dashboard" class="nav-link active" id="nav-dashboard">
+                        <i class="fas fa-chart-line"></i> لوحة التحكم
+                    </a></li>
+                <li><a href="#" data-section="patients" class="nav-link" id="nav-patients">
+                        <i class="fas fa-users"></i> المرضى
+                    </a></li>
+                <li><a href="#" data-section="appointments" class="nav-link" id="nav-appointments">
+                        <i class="fas fa-calendar-check"></i> المواعيد
+                    </a></li>
+                <li><a href="#" data-section="services" class="nav-link" id="nav-services">
+                        <i class="fas fa-briefcase-medical"></i> الخدمات
+                    </a></li>
+                <li><a href="#" data-section="doctors" class="nav-link" id="nav-doctors">
+                        <i class="fas fa-user-md"></i> الأطباء
+                    </a></li>
+                <li><a href="#" data-section="slots" class="nav-link" id="nav-slots">
+                        <i class="fas fa-clock"></i> المواعيد المتاحة
+                    </a></li>
+                <li><a href="#" data-section="settings" class="nav-link" id="nav-settings">
+                        <i class="fas fa-cog"></i> الإعدادات
+                    </a></li>
             </ul>
+            <button class="logout-btn" id="logout-btn" style="margin-top:1.5rem">
+                <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+            </button>
         </nav>
-        <div class="sidebar-footer">
-            <p>نظام إدارة العيادة v1.0</p>
-        </div>
-        <!-- User Menu -->
+
+        <div class="sidebar-footer">نظام إدارة العيادة v2.0</div>
+
         <div id="user-menu" class="user-menu">
-            <div class="user-avatar">م</div>
+            <div class="user-avatar" id="user-avatar">م</div>
             <div class="user-info">
-                <div class="user-name">جاري التحميل...</div>
-                <div class="user-email"></div>
+                <div class="user-name" id="user-name">جاري التحميل...</div>
+                <div class="user-email" id="user-email"></div>
             </div>
         </div>
     </aside>
 
-    <!-- Main Content -->
+    <!-- ===== MAIN CONTENT ===== -->
     <main class="content">
-        <!-- Dashboard Section -->
+
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div>
+                <div class="top-bar-title">مرحباً بك في نظام الإدارة الذكي 👋</div>
+                <div class="top-bar-time" id="live-clock">--:--:--</div>
+            </div>
+            <div class="top-bar-right">
+                <div class="top-notif-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- === DASHBOARD === -->
         <section id="dashboard" class="section active">
             <div class="section-header">
-                <h2><i class="fas fa-home"></i> لوحة التحكم</h2>
-                <p class="subtitle">مرحباً بك في نظام إدارة عيادة الأسنان</p>
+                <div>
+                    <h2><i class="fas fa-chart-line"></i> لوحة التحكم</h2>
+                    <p class="subtitle">نظرة عامة على أداء العيادة</p>
+                </div>
             </div>
 
             <div class="stats-grid">
@@ -59,60 +351,127 @@
                     <div class="stat-icon"><i class="fas fa-users"></i></div>
                     <div class="stat-info">
                         <h3 id="patients-count">0</h3>
-                        <p>المرضى</p>
+                        <p>إجمالي المرضى</p>
+                        <div class="mini-chart">
+                            <div class="mini-bar" style="height:40%;animation-delay:.1s"></div>
+                            <div class="mini-bar" style="height:60%;animation-delay:.2s"></div>
+                            <div class="mini-bar" style="height:45%;animation-delay:.3s"></div>
+                            <div class="mini-bar" style="height:80%;animation-delay:.4s"></div>
+                            <div class="mini-bar" style="height:65%;animation-delay:.5s"></div>
+                            <div class="mini-bar" style="height:100%;animation-delay:.6s"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="stat-card appointments-stat">
                     <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
                     <div class="stat-info">
                         <h3 id="appointments-count">0</h3>
-                        <p>المواعيد اليوم</p>
+                        <p>مواعيد اليوم</p>
+                        <div class="mini-chart">
+                            <div class="mini-bar"
+                                style="height:50%;animation-delay:.1s;background:linear-gradient(180deg,var(--accent),#7c3aed)">
+                            </div>
+                            <div class="mini-bar"
+                                style="height:70%;animation-delay:.2s;background:linear-gradient(180deg,var(--accent),#7c3aed)">
+                            </div>
+                            <div class="mini-bar"
+                                style="height:55%;animation-delay:.3s;background:linear-gradient(180deg,var(--accent),#7c3aed)">
+                            </div>
+                            <div class="mini-bar"
+                                style="height:90%;animation-delay:.4s;background:linear-gradient(180deg,var(--accent),#7c3aed)">
+                            </div>
+                            <div class="mini-bar"
+                                style="height:60%;animation-delay:.5s;background:linear-gradient(180deg,var(--accent),#7c3aed)">
+                            </div>
+                            <div class="mini-bar"
+                                style="height:75%;animation-delay:.6s;background:linear-gradient(180deg,var(--accent),#7c3aed)">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="stat-card services-stat">
                     <div class="stat-icon"><i class="fas fa-briefcase-medical"></i></div>
                     <div class="stat-info">
                         <h3 id="services-count">0</h3>
-                        <p>الخدمات</p>
+                        <p>الخدمات المتاحة</p>
+                        <div class="mini-chart">
+                            <div class="mini-bar"
+                                style="height:35%;animation-delay:.1s;background:linear-gradient(180deg,var(--success),#059669)">
+                            </div>
+                            <div class="mini-bar"
+                                style="height:55%;animation-delay:.2s;background:linear-gradient(180deg,var(--success),#059669)">
+                            </div>
+                            <div class="mini-bar"
+                                style="height:70%;animation-delay:.3s;background:linear-gradient(180deg,var(--success),#059669)">
+                            </div>
+                            <div class="mini-bar"
+                                style="height:50%;animation-delay:.4s;background:linear-gradient(180deg,var(--success),#059669)">
+                            </div>
+                            <div class="mini-bar"
+                                style="height:80%;animation-delay:.5s;background:linear-gradient(180deg,var(--success),#059669)">
+                            </div>
+                            <div class="mini-bar"
+                                style="height:65%;animation-delay:.6s;background:linear-gradient(180deg,var(--success),#059669)">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="stat-card doctors-stat">
                     <div class="stat-icon"><i class="fas fa-user-md"></i></div>
                     <div class="stat-info">
                         <h3 id="doctors-count">0</h3>
-                        <p>الأطباء</p>
+                        <p>الأطباء النشطون</p>
+                        <div class="mini-chart">
+                            <div class="mini-bar"
+                                style="height:60%;animation-delay:.1s;background:linear-gradient(180deg,var(--warning),#d97706)">
+                            </div>
+                            <div class="mini-bar"
+                                style="height:40%;animation-delay:.2s;background:linear-gradient(180deg,var(--warning),#d97706)">
+                            </div>
+                            <div class="mini-bar"
+                                style="height:85%;animation-delay:.3s;background:linear-gradient(180deg,var(--warning),#d97706)">
+                            </div>
+                            <div class="mini-bar"
+                                style="height:55%;animation-delay:.4s;background:linear-gradient(180deg,var(--warning),#d97706)">
+                            </div>
+                            <div class="mini-bar"
+                                style="height:70%;animation-delay:.5s;background:linear-gradient(180deg,var(--warning),#d97706)">
+                            </div>
+                            <div class="mini-bar"
+                                style="height:95%;animation-delay:.6s;background:linear-gradient(180deg,var(--warning),#d97706)">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="dashboard-grid">
-                <div class="card upcoming-appointments">
+                <div class="card">
                     <h3><i class="fas fa-clock"></i> المواعيد القادمة</h3>
-                    <div id="upcoming-list" class="list-container">
+                    <div id="upcoming-list">
                         <p class="empty-state">جاري التحميل...</p>
                     </div>
                 </div>
-                <div class="card recent-patients">
+                <div class="card">
                     <h3><i class="fas fa-user-plus"></i> أحدث المرضى</h3>
-                    <div id="recent-patients-list" class="list-container">
+                    <div id="recent-patients-list">
                         <p class="empty-state">جاري التحميل...</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Patients Section -->
+        <!-- === PATIENTS === -->
         <section id="patients" class="section">
             <div class="section-header">
                 <h2><i class="fas fa-users"></i> إدارة المرضى</h2>
                 <button class="btn btn-primary" onclick="openModal('patient-modal')">
-                    <i class="fas fa-plus"></i> إضافة مريض جديد
+                    <i class="fas fa-plus"></i> إضافة مريض
                 </button>
             </div>
-
             <div class="card">
                 <div class="table-header">
-                    <input type="text" id="patient-search" placeholder="بحث عن مريض..." class="search-input" />
+                    <input type="text" id="patient-search" placeholder="🔍 بحث عن مريض..." class="search-input" />
                 </div>
                 <div class="table-container">
                     <table id="patients-table">
@@ -135,15 +494,14 @@
             </div>
         </section>
 
-        <!-- Appointments Section -->
+        <!-- === APPOINTMENTS === -->
         <section id="appointments" class="section">
             <div class="section-header">
                 <h2><i class="fas fa-calendar-check"></i> إدارة المواعيد</h2>
                 <button class="btn btn-primary" onclick="openModal('appointment-modal')">
-                    <i class="fas fa-plus"></i> حجز موعد جديد
+                    <i class="fas fa-plus"></i> حجز موعد
                 </button>
             </div>
-
             <div class="card">
                 <div class="table-header">
                     <input type="date" id="appointment-date-filter" class="date-input" />
@@ -177,29 +535,27 @@
             </div>
         </section>
 
-        <!-- Services Section -->
+        <!-- === SERVICES === -->
         <section id="services" class="section">
             <div class="section-header">
                 <h2><i class="fas fa-briefcase-medical"></i> إدارة الخدمات</h2>
                 <button class="btn btn-primary" onclick="openModal('service-modal')">
-                    <i class="fas fa-plus"></i> إضافة خدمة جديدة
+                    <i class="fas fa-plus"></i> إضافة خدمة
                 </button>
             </div>
-
             <div class="services-grid" id="services-grid">
                 <div class="empty-state">جاري التحميل...</div>
             </div>
         </section>
 
-        <!-- Available Slots Section -->
+        <!-- === SLOTS === -->
         <section id="slots" class="section">
             <div class="section-header">
-                <h2><i class="fas fa-clock"></i> إدارة المواعيد المتاحة</h2>
+                <h2><i class="fas fa-clock"></i> المواعيد المتاحة</h2>
                 <button class="btn btn-primary" onclick="openModal('slot-modal')">
-                    <i class="fas fa-plus"></i> إضافة موعد متاح
+                    <i class="fas fa-plus"></i> إضافة موعد
                 </button>
             </div>
-
             <div class="card">
                 <div class="table-header">
                     <select id="slot-service-filter" class="select-input" onchange="loadSlots()">
@@ -232,35 +588,33 @@
             </div>
         </section>
 
-        <!-- Doctors Section -->
+        <!-- === DOCTORS === -->
         <section id="doctors" class="section">
             <div class="section-header">
                 <h2><i class="fas fa-user-md"></i> إدارة الأطباء</h2>
                 <button class="btn btn-primary" onclick="openModal('doctor-modal')">
-                    <i class="fas fa-plus"></i> إضافة طبيب جديد
+                    <i class="fas fa-plus"></i> إضافة طبيب
                 </button>
             </div>
-
             <div class="doctors-grid" id="doctors-grid">
                 <div class="empty-state">جاري التحميل...</div>
             </div>
         </section>
 
-        <!-- Settings Section -->
+        <!-- === SETTINGS === -->
         <section id="settings" class="section">
             <div class="section-header">
                 <h2><i class="fas fa-cog"></i> الإعدادات</h2>
             </div>
-
             <div class="card settings-card">
                 <h3><i class="fas fa-database"></i> إعدادات Supabase</h3>
                 <form id="supabase-settings-form">
                     <div class="form-group">
-                        <label for="supabase-url">Supabase URL</label>
+                        <label><i class="fas fa-link"></i> Supabase URL</label>
                         <input type="url" id="supabase-url" placeholder="https://your-project.supabase.co" />
                     </div>
                     <div class="form-group">
-                        <label for="supabase-key">Supabase Anon Key</label>
+                        <label><i class="fas fa-key"></i> Supabase Anon Key</label>
                         <input type="text" id="supabase-key" placeholder="your-anon-key" />
                     </div>
                     <button type="submit" class="btn btn-primary">
@@ -272,12 +626,11 @@
                     <span>غير متصل</span>
                 </div>
             </div>
-
             <div class="card settings-card">
                 <h3><i class="fas fa-robot"></i> إعدادات n8n AI</h3>
                 <form id="n8n-settings-form">
                     <div class="form-group">
-                        <label for="n8n-webhook">رابط Webhook</label>
+                        <label><i class="fas fa-plug"></i> رابط Webhook</label>
                         <input type="url" id="n8n-webhook" placeholder="https://your-n8n.com/webhook/clinic-ai" />
                     </div>
                     <button type="submit" class="btn btn-primary">
@@ -288,36 +641,37 @@
         </section>
     </main>
 
-    <!-- Modals -->
+    <!-- ========== MODALS ========== -->
+
     <!-- Patient Modal -->
     <div id="patient-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fas fa-user-plus"></i> <span id="patient-modal-title">إضافة مريض جديد</span></h3>
-                <button class="close-btn" onclick="closeModal('patient-modal')">&times;</button>
+                <button class="close-btn" onclick="closeModal('patient-modal')">×</button>
             </div>
             <form id="patient-form">
                 <input type="hidden" id="patient-id" />
                 <div class="form-group">
-                    <label for="patient-name">الاسم الكامل *</label>
+                    <label><i class="fas fa-user"></i> الاسم الكامل *</label>
                     <input type="text" id="patient-name" required />
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="patient-phone">رقم الهاتف</label>
+                        <label><i class="fas fa-phone"></i> رقم الهاتف</label>
                         <input type="tel" id="patient-phone" />
                     </div>
                     <div class="form-group">
-                        <label for="patient-email">البريد الإلكتروني</label>
+                        <label><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
                         <input type="email" id="patient-email" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="patient-address">العنوان</label>
+                    <label><i class="fas fa-map-marker-alt"></i> العنوان</label>
                     <input type="text" id="patient-address" />
                 </div>
                 <div class="form-group">
-                    <label for="patient-notes">ملاحظات</label>
+                    <label><i class="fas fa-sticky-note"></i> ملاحظات</label>
                     <textarea id="patient-notes" rows="3"></textarea>
                 </div>
                 <div class="modal-footer">
@@ -333,34 +687,34 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fas fa-calendar-plus"></i> <span id="appointment-modal-title">حجز موعد جديد</span></h3>
-                <button class="close-btn" onclick="closeModal('appointment-modal')">&times;</button>
+                <button class="close-btn" onclick="closeModal('appointment-modal')">×</button>
             </div>
             <form id="appointment-form">
                 <input type="hidden" id="appointment-id" />
                 <div class="form-group">
-                    <label for="appointment-patient">المريض *</label>
+                    <label><i class="fas fa-user"></i> المريض *</label>
                     <select id="appointment-patient" required></select>
                 </div>
                 <div class="form-group">
-                    <label for="appointment-doctor">الطبيب *</label>
+                    <label><i class="fas fa-user-md"></i> الطبيب *</label>
                     <select id="appointment-doctor" required></select>
                 </div>
                 <div class="form-group">
-                    <label for="appointment-service">الخدمة *</label>
+                    <label><i class="fas fa-briefcase-medical"></i> الخدمة *</label>
                     <select id="appointment-service" required></select>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="appointment-date">التاريخ *</label>
+                        <label><i class="fas fa-calendar"></i> التاريخ *</label>
                         <input type="date" id="appointment-date" required />
                     </div>
                     <div class="form-group">
-                        <label for="appointment-time">الوقت *</label>
+                        <label><i class="fas fa-clock"></i> الوقت *</label>
                         <input type="time" id="appointment-time" required />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="appointment-status">الحالة</label>
+                    <label><i class="fas fa-info-circle"></i> الحالة</label>
                     <select id="appointment-status">
                         <option value="pending">قيد الانتظار</option>
                         <option value="confirmed">مؤكد</option>
@@ -369,7 +723,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="appointment-notes">ملاحظات</label>
+                    <label><i class="fas fa-sticky-note"></i> ملاحظات</label>
                     <textarea id="appointment-notes" rows="3"></textarea>
                 </div>
                 <div class="modal-footer">
@@ -386,20 +740,20 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fas fa-briefcase-medical"></i> <span id="service-modal-title">إضافة خدمة جديدة</span></h3>
-                <button class="close-btn" onclick="closeModal('service-modal')">&times;</button>
+                <button class="close-btn" onclick="closeModal('service-modal')">×</button>
             </div>
             <form id="service-form">
                 <input type="hidden" id="service-id" />
                 <div class="form-group">
-                    <label for="service-name">اسم الخدمة *</label>
+                    <label><i class="fas fa-tag"></i> اسم الخدمة *</label>
                     <input type="text" id="service-name" required />
                 </div>
                 <div class="form-group">
-                    <label for="service-price">السعر (ج.م) *</label>
+                    <label><i class="fas fa-pound-sign"></i> السعر (ج.م) *</label>
                     <input type="number" id="service-price" step="0.01" required />
                 </div>
                 <div class="form-group">
-                    <label for="service-description">الوصف</label>
+                    <label><i class="fas fa-align-left"></i> الوصف</label>
                     <textarea id="service-description" rows="3"></textarea>
                 </div>
                 <div class="modal-footer">
@@ -415,25 +769,25 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fas fa-user-md"></i> <span id="doctor-modal-title">إضافة طبيب جديد</span></h3>
-                <button class="close-btn" onclick="closeModal('doctor-modal')">&times;</button>
+                <button class="close-btn" onclick="closeModal('doctor-modal')">×</button>
             </div>
             <form id="doctor-form">
                 <input type="hidden" id="doctor-id" />
                 <div class="form-group">
-                    <label for="doctor-name">اسم الطبيب *</label>
+                    <label><i class="fas fa-user"></i> اسم الطبيب *</label>
                     <input type="text" id="doctor-name" required />
                 </div>
                 <div class="form-group">
-                    <label for="doctor-specialty">التخصص</label>
+                    <label><i class="fas fa-stethoscope"></i> التخصص</label>
                     <input type="text" id="doctor-specialty" />
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="doctor-phone">رقم الهاتف</label>
+                        <label><i class="fas fa-phone"></i> رقم الهاتف</label>
                         <input type="tel" id="doctor-phone" />
                     </div>
                     <div class="form-group">
-                        <label for="doctor-email">البريد الإلكتروني</label>
+                        <label><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
                         <input type="email" id="doctor-email" />
                     </div>
                 </div>
@@ -450,21 +804,21 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fas fa-clock"></i> <span id="slot-modal-title">إضافة موعد متاح</span></h3>
-                <button class="close-btn" onclick="closeModal('slot-modal')">&times;</button>
+                <button class="close-btn" onclick="closeModal('slot-modal')">×</button>
             </div>
             <form id="slot-form">
                 <input type="hidden" id="slot-id" />
                 <div class="form-group">
-                    <label for="slot-service">الخدمة *</label>
+                    <label><i class="fas fa-briefcase-medical"></i> الخدمة *</label>
                     <select id="slot-service" required></select>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="slot-date">التاريخ *</label>
+                        <label><i class="fas fa-calendar"></i> التاريخ *</label>
                         <input type="date" id="slot-date" required />
                     </div>
                     <div class="form-group">
-                        <label for="slot-time">الوقت *</label>
+                        <label><i class="fas fa-clock"></i> الوقت *</label>
                         <input type="time" id="slot-time" required />
                     </div>
                 </div>
@@ -476,11 +830,68 @@
         </div>
     </div>
 
-    <!-- Toast Notification -->
+    <!-- Toast -->
     <div id="toast" class="toast"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="app.js"></script>
+
+    <script>
+        // ===== 3D CURSOR =====
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+        document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+        (function animCursor() {
+            rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15;
+            dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+            ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+            requestAnimationFrame(animCursor);
+        })();
+        document.addEventListener('mousedown', () => {
+            dot.style.transform = 'translate(-50%,-50%) scale(0.7)';
+            ring.style.transform = 'translate(-50%,-50%) scale(1.3)';
+        });
+        document.addEventListener('mouseup', () => {
+            dot.style.transform = 'translate(-50%,-50%) scale(1)';
+            ring.style.transform = 'translate(-50%,-50%) scale(1)';
+        });
+
+        // ===== LIVE CLOCK =====
+        function updateClock() {
+            const now = new Date();
+            const t = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const d = now.toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const el = document.getElementById('live-clock');
+            if (el) el.textContent = d + ' — ' + t;
+        }
+        updateClock(); setInterval(updateClock, 1000);
+
+        // ===== SIDEBAR NAV =====
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                const sec = link.dataset.section;
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                link.classList.add('active');
+                const target = document.getElementById(sec);
+                if (target) target.classList.add('active');
+            });
+        });
+
+        // ===== LOGOUT =====
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            const SUPABASE_URL = localStorage.getItem('supabase_url') || 'https://islapcokcteyrbeqrsu.supabase.co';
+            const SUPABASE_KEY = localStorage.getItem('supabase_key') || '';
+            if (SUPABASE_URL && SUPABASE_KEY) {
+                const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                await client.auth.signOut();
+            }
+            localStorage.clear();
+            window.location.href = 'login.html';
+        });
+    </script>
 </body>
 
 </html>
